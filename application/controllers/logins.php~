@@ -1,0 +1,79 @@
+<?php
+Class Logins extends CI_Controller {
+    
+    public function index()
+    {
+      $data = array(
+               'title' => 'Login');
+      $this->load->view('display_login', $data);
+    }
+  
+    function displayLogin() 
+    {
+        $data = array(
+               'title' => 'Login');
+        $this->load->view('display_login', $data);
+    }
+    
+    function loginAction()
+    {
+        $this->load->model('user_model');
+        $status = $this->user_model->check_login();
+        if ($status) 
+        {
+            echo "Valid";
+        } else {
+            echo "Not valid";
+        }        
+    }
+    
+    function ajax_check_login()
+    {
+        $this->load->model('user_model');
+        $status = $this->user_model->ajax_check_login_model();
+        if ($status) 
+        {
+            echo "<font color='green'>Valid User</font>";
+        } else {
+            echo "<font color='red'>Not a valid User</font>";
+        }  
+    }
+    
+    public function signup()
+    {
+        $data = array(
+               'title' => 'Signup',
+               'error' => '');
+        $this->load->view('signup', $data);
+    }
+    
+    public function insert_user()
+    {
+        $this->load->model('user_model');
+        $status = $this->user_model->add_user();
+        if ($status) 
+        {
+           
+        }
+        else
+        {
+            $data = array(
+               'title' => 'Signup',
+               'error' => 'Change Username');
+            $this->load->view('signup', $data);
+        }
+    }
+    
+    public function view_all()
+    {
+        $this->load->model('user_model');
+        $users = $this->user_model->get_all_users();
+        $json_users = json_decode(json_encode($users), true);
+        $data = array(
+            'json_users' => $json_users
+        );
+
+        $this->load->view('view_all_users',$data);
+
+    }
+}
